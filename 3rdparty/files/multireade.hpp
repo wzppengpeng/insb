@@ -9,12 +9,9 @@
 
 #include "thread/parallel_algorithm.hpp"
 
-#include "function/help_function.hpp"
 
 namespace wzp
 {
-
-using wzp::print;
 
 template<typename R>
 class MultiReader

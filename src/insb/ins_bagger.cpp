@@ -53,7 +53,12 @@ void InsBagger::Initial() {
     CHECK(m_config_parser.config());
     //update configs
     io::ConfigIO::MergeArgs(&m_config_parser);
-    m_task_ptr =  insb::ObjectFactory<InsTask>::create(io::ConfigIO::ReadParam<string>(&m_config_parser, "task"));
+    auto task_name = io::ConfigIO::ReadParam<string>(&m_config_parser, "task");
+    log::info("Now Begin To Handle Task", task_name);
+    m_task_ptr = insb::ObjectFactory<InsTask>::create(task_name);
+    if(!m_task_ptr.get()) {
+        log::fatal("Task Name Is Not Ok", task_name);
+    }
     m_task_ptr->Initial(&m_config_parser);
 }
 

@@ -14,6 +14,8 @@ namespace insb
 //the float def
 typedef float F;
 
+template<typename T>
+using Matrix = std::vector<std::vector<T> >;
 
 //the simple print
 #ifndef PRINT
