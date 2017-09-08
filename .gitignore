@@ -1,0 +1,7 @@
+#build dir
+build
+bin
+lib
+
+#temp files
+*.json
