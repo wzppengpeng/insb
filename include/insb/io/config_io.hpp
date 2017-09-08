@@ -33,6 +33,25 @@ public:
         return std::move(val);
     }
 
+    // an interface to add some default value in the table of config
+    template<typename T>
+    inline static void AddDefaultValue(wzp::ConfigParser* parser_ptr,
+        const std::string& key, const T& val) {
+        T tmp;
+        if(!parser_ptr->get(key, tmp)) {
+            parser_ptr->update(key, std::to_string(val));
+        }
+    }
+
+    //the specaial of string
+    inline static void AddDefaultValue(wzp::ConfigParser* parser_ptr,
+        const std::string& key, const std::string& val) {
+        std::string tmp;
+        if(!parser_ptr->get(key, tmp)) {
+            parser_ptr->update(key, val);
+        }
+    }
+
 };
 
 
