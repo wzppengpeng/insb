@@ -53,6 +53,43 @@ void SetCVMatRowWithOperation(cv::Mat* mat, int i,
     }
 }
 
+// add a value to opencv Mat
+template<typename T>
+void AddCVMatRow(cv::Mat* mat, int i, const std::vector<T>& vec) {
+    assert(mat->cols == static_cast<int>(vec.size()));
+    for(int j = 0; j < mat->cols; ++j) {
+        mat->at<T>(i, j) += vec[j];
+    }
+}
+
+// the mat type
+template<typename T>
+void AddCVMatRow(cv::Mat* mat, int i, const cv::Mat& raw_mat, int r) {
+    assert(mat->cols == raw_mat.cols);
+    for(int j = 0; j < mat->cols; ++j) {
+        mat->at<T>(i, j) += raw_mat.at<T>(r, j);
+    }
+}
+
+// add the value
+template<typename T, typename Fun>
+void AddCVMatRowWithOperation(cv::Mat* mat, int i,
+    const std::vector<T>& vec, Fun&& fun) {
+    assert(mat->cols == static_cast<int>(vec.size()));
+    for(int j = 0; j < mat->cols; ++j) {
+        mat->at<T>(i, j) += fun(vec[j]);
+    }
+}
+
+// the mat type
+template<typename T, typename Fun>
+void AddCVMatRowWithOperation(cv::Mat* mat, int i,
+    const cv::Mat& raw_mat, int r, Fun&& fun) {
+    assert(mat->cols == raw_mat.cols);
+    for(int j = 0; j < mat->cols; ++j) {
+        mat->at<T>(i, j) += fun(raw_mat.at<T>(r, j));
+    }
+}
 
 } //insb
 
