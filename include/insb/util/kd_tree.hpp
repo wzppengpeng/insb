@@ -44,7 +44,7 @@ public:
         int knn);
 
 private:
-    std::unique_ptr<KdTreeImple> m_kd_tree;
+    std::shared_ptr<KdTreeImple> m_kd_tree;
 
 };
 

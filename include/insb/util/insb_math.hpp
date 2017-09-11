@@ -2,6 +2,8 @@
 #define INSB_MATH_HPP_
 
 #include <cmath>
+#include <ctime>
+
 #include <random>
 
 #include "insb/common.hpp"
@@ -24,6 +26,11 @@ inline T insb_clip(T& val, T L, T H) {
         val = H;
     }
     return val;
+}
+
+
+inline int insb_rand_int(int max_num) {
+    return rand() % max_num;
 }
 
 
