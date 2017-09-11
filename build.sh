@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# build the project
 
 # clean the environment
+rm -rf build
+rm -rf bin
+rm -rf lib
 
+# build the project
 mkdir -p build
 
 cd build
