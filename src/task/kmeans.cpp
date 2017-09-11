@@ -86,10 +86,11 @@ void KmeansCluster::LoadTrainSet() {
 void KmeansCluster::InitClusterCenter() {
     unordered_set<int> already_in;
     for(int i = 0; i < m_cluster_num;) {
-        int r = math::insb_random_int<int>(0, m_train_num);
+        int r = math::insb_random_int<int>(0, m_train_num - 1);
         if(already_in.count(r)) continue;
         // set the col
         insb::SetCVMatRow(&m_centers, i, m_train_set[r]);
+        already_in.emplace(r);
         ++i;
     }
     m_kd_tree.Release();
@@ -133,7 +134,7 @@ bool KmeansCluster::Converge(int run) const {
 void KmeansCluster::ReCalculateCenters(const cv::Mat& update, const std::vector<int>& update_num) {
     for(int i = 0; i < m_cluster_num; ++i) {
         if(update_num[i] == 0) {
-            int r = math::insb_random_int<int>(0, m_cluster_num);
+            int r = math::insb_random_int<int>(0, m_train_num - 1);
             SetCVMatRow(&m_centers, i, m_train_set[r]);
         } else {
             SetCVMatRowWithOperation<F, std::function<F(F)> >(&m_centers, i, update, i,
