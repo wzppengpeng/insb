@@ -49,8 +49,9 @@ inline T insb_random_int(T begin, T end) {
  */
 template<typename T>
 inline F insb_random_real(T begin, T end) {
-    static std::default_random_engine er;
-    static std::uniform_real_distribution<F> ur(begin, end);
+    static std::random_device rd;
+    static std::default_random_engine er(rd());
+    std::uniform_real_distribution<F> ur(begin, end);
     return ur(er);
 }
 

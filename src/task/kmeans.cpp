@@ -18,7 +18,101 @@
 using namespace std;
 
 using wzp::log;
+using wzp::print;
 
+/**
+ * The Kmeans++ algorithm
+ */
+namespace insb
+{
+
+namespace algorithm
+{
+
+class KmeansPPImpl {
+
+public:
+    KmeansPPImpl(Matrix<F>& train_set, int train_num);
+
+    // init the centers
+    void InitialCenters(cv::Mat* m_centers);
+
+private:
+    Matrix<F>& m_train_set;
+    int m_train_num;
+
+    cv::Mat m_temp_centers;
+
+private:
+    /**
+     * Private Functions
+     */
+    // build the temp kd tree
+    void BuildTempKdTree(cv::Mat* m_centers, int i, insb::KdTree& kd_tree);
+
+    // Get the distance vector
+    F ComputeDistanceVector(insb::KdTree& kd_tree, vector<F>& distance);
+
+    int ChooseOneClusterIndex(cv::Mat* m_centers, int i, insb::KdTree& kd_tree);
+
+};
+
+KmeansPPImpl::KmeansPPImpl(Matrix<F>& train_set, int train_num)
+    : m_train_set(train_set), m_train_num(train_num)
+    {}
+
+void KmeansPPImpl::InitialCenters(cv::Mat* m_centers) {
+    int first = math::insb_random_int<int>(0, m_train_num - 1);
+    insb::SetCVMatRow(m_centers, 0, m_train_set[first]);
+    KdTree kd_tree;
+    for(int i = 1; i < m_centers->rows; ++i) {
+        int r = ChooseOneClusterIndex(m_centers, i, kd_tree);
+        insb::SetCVMatRow(m_centers, i, m_train_set[r]);
+    }
+}
+
+void KmeansPPImpl::BuildTempKdTree(cv::Mat* m_centers, int i, insb::KdTree& kd_tree) {
+    m_temp_centers.release();
+    m_temp_centers.create(i, m_centers->cols, CV_32F);
+    for(int r = 0; r < i; ++r) {
+        insb::SetCVMatRow<F>(&m_temp_centers, r, *m_centers, r);
+    }
+    kd_tree.ReBuild(m_temp_centers, insb::KdTree::AKM);
+}
+
+F KmeansPPImpl::ComputeDistanceVector(insb::KdTree& kd_tree, vector<F>& distance) {
+    distance.resize(m_train_set.size(), 0.);
+    F dis_all = 0.;
+    for(size_t i = 0; i < m_train_set.size(); ++i) {
+        auto& fea_vec = m_train_set[i];
+        auto dis_pair = kd_tree.KnnSearch(fea_vec, 1);
+        distance[i] = dis_pair.second[0];
+        dis_all += distance[i];
+    }
+    return dis_all;
+}
+
+int KmeansPPImpl::ChooseOneClusterIndex(cv::Mat* m_centers, int i, insb::KdTree& kd_tree) {
+    BuildTempKdTree(m_centers, i, kd_tree);
+    vector<F> dx;
+    F sum_dx = ComputeDistanceVector(kd_tree, dx);
+    F rand_dx = math::insb_random_real<F>(0, sum_dx);
+    int j = 0;
+    for(; j < m_train_num - 1; ++j) {
+        rand_dx -= dx[j];
+        if(rand_dx <= 0.) break;
+    }
+    return j;
+}
+
+} //algorithm
+
+} //insb
+
+
+/**
+ * the part of KmeansClusterTask Implement
+ */
 namespace insb
 {
 
@@ -98,7 +192,8 @@ void KmeansCluster::InitClusterCenter() {
 }
 
 void KmeansCluster::InitClusterCenterPP() {
-    log::fatal("NOT IMPLEMENTED");
+    algorithm::KmeansPPImpl kmeans_pp(m_train_set, m_train_num);
+    kmeans_pp.InitialCenters(&m_centers);
 }
 
 void KmeansCluster::ClearEnv() {
