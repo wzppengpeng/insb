@@ -67,8 +67,10 @@ void Projector::PreEnv() {
         m_handlers.emplace_back(projection::ProjectorHandler::create(m_Tao_, m_need_l2_norm == 1, m_output_dir));
     m_kd_trees.resize(m_cores);
     // Load the codebook
+    log::info("Loading CodeBook...");
     io::Loader::LoadOpenCVMatFromPath(m_codebook_path, &m_centers);
     // build kd tree
+    log::info("Indexing...");
     for(auto& kd_tree : m_kd_trees) {
         kd_tree.Build(m_centers, KdTree::AKM, 8);
     }
