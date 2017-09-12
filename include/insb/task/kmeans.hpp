@@ -4,7 +4,6 @@
 
 #include "insb/task.hpp"
 
-#include <mutex>
 
 #include "reflection/reflection.hpp"
 
@@ -33,7 +32,6 @@ private:
     static ReflectionRegister(InsTask, KmeansCluster) regis_hello_kmeans_cluster;
 
     // the mutex to change the update matrix
-    mutable std::mutex m_mut;
 
 private:
     // the type of init type
@@ -56,6 +54,9 @@ private:
     std::string m_codebook_save_dir;
 
     KmeansType m_kmeans_type;
+
+    // need l2 norm the input data
+    int m_need_l2_norm;
 
     ////////////////////
 

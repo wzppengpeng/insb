@@ -8,6 +8,8 @@
 #include <sstream>
 
 #include "insb/common.hpp"
+#include "insb/util/insb_math.hpp"
+
 
 #include "log/log.hpp"
 
@@ -29,13 +31,15 @@ void insb_transfer_string_to_data_vector(const std::string& line, std::vector<T>
 
 // the function to tranfer file data into matrix
 template<typename T>
-void insb_transfer_file_into_data_matrix(const std::string& file, Matrix<T>& datas) {
+void insb_transfer_file_into_data_matrix(const std::string& file, Matrix<T>& datas,
+    bool need_l2_norm = false) {
     std::ifstream ifile(file, std::ios::in);
     CHECK(ifile);
     std::vector<T> row;
     std::string line;
     while(std::getline(ifile, line)) {
         insb_transfer_string_to_data_vector(line, row);
+        if(need_l2_norm) insb::math::insb_l2_norm(row);
         datas.emplace_back(row);
         row.clear();;
     }

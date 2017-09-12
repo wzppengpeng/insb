@@ -18,14 +18,14 @@ public:
     KdTreeImple();
 
     // the interface to build KDTree
-    void Build(const cv::Mat& dataset, KdTree::KnnType type);
+    void Build(const cv::Mat& dataset, KdTree::KnnType type, int param = 4);
 
     // the release interface
     void Release();
 
     // the search interaface
     std::pair<std::vector<int>, std::vector<F> > KnnSearch(const std::vector<F>& data,
-        int knn);
+        int knn, int param = 512);
 
 private:
     cv::flann::Index m_index;
@@ -40,22 +40,22 @@ KdTree::KdTree() : m_kd_tree(new KdTreeImple())
 {
 }
 
-void KdTree::Build(const cv::Mat& dataset, KdTree::KnnType type) {
-    m_kd_tree->Build(dataset, type);
+void KdTree::Build(const cv::Mat& dataset, KdTree::KnnType type, int param) {
+    m_kd_tree->Build(dataset, type, param);
 }
 
 void KdTree::Release() {
     m_kd_tree->Release();
 }
 
-void KdTree::ReBuild(const cv::Mat& dataset, KdTree::KnnType type) {
+void KdTree::ReBuild(const cv::Mat& dataset, KdTree::KnnType type, int param) {
     Release();
-    Build(dataset, type);
+    Build(dataset, type, param);
 }
 
 std::pair<std::vector<int>, std::vector<F> > KdTree::KnnSearch(const std::vector<F>& data,
-        int knn) {
-    return std::move(m_kd_tree->KnnSearch(data, knn));
+        int knn, int param) {
+    return std::move(m_kd_tree->KnnSearch(data, knn, param));
 }
 
 /**
@@ -63,9 +63,9 @@ std::pair<std::vector<int>, std::vector<F> > KdTree::KnnSearch(const std::vector
  */
 KdTreeImple::KdTreeImple() : m_index() {}
 
-void KdTreeImple::Build(const cv::Mat& dataset, KdTree::KnnType type) {
+void KdTreeImple::Build(const cv::Mat& dataset, KdTree::KnnType type, int param) {
     if(type == KdTree::AKM) {
-        m_index.build(dataset, cv::flann::KDTreeIndexParams(4));
+        m_index.build(dataset, cv::flann::KDTreeIndexParams(param));
     } else {
         m_index.build(dataset, cv::flann::LinearIndexParams());
     }
@@ -76,10 +76,10 @@ void KdTreeImple::Release() {
 }
 
 std::pair<std::vector<int>, std::vector<F> > KdTreeImple::KnnSearch(const std::vector<F>& data,
-        int knn) {
+        int knn, int param) {
     vector<int> indice(knn);
     vector<F> dist(knn);
-    m_index.knnSearch(data, indice, dist, knn, cv::flann::SearchParams(512));
+    m_index.knnSearch(data, indice, dist, knn, cv::flann::SearchParams(param));
     return std::move(std::make_pair(indice, dist));
 }
 

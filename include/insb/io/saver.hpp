@@ -21,6 +21,10 @@ class Saver {
 public:
     static bool SaveCodeBook(const cv::Mat& codebook, const char* path);
 
+    // save the projection index and dist
+    static bool SaveProjectionIndexDist(const std::vector<std::pair<int, F> >& ma_index_dist,
+        const std::string& save_path);
+
 };
 
 } //io

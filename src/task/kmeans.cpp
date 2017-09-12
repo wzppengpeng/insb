@@ -132,6 +132,7 @@ void KmeansCluster::ParseConfig() {
     io::ConfigIO::AddDefaultValue(m_parser_ptr, "iter_min", 120);
     io::ConfigIO::AddDefaultValue(m_parser_ptr, "iter_max", 300);
     io::ConfigIO::AddDefaultValue(m_parser_ptr, "iter_save", 80);
+    io::ConfigIO::AddDefaultValue(m_parser_ptr, "need_l2_norm", 0);
     m_cluster_num = io::ConfigIO::ReadParam<int>(m_parser_ptr, "cluster_num"); //k
     m_dimension = io::ConfigIO::ReadParam<int>(m_parser_ptr, "dimension");
     log::info("cluster number", m_cluster_num, "dimension", m_dimension);
@@ -147,6 +148,7 @@ void KmeansCluster::ParseConfig() {
     m_iter_min = io::ConfigIO::ReadParam<int>(m_parser_ptr, "iter_min");
     m_iter_max = io::ConfigIO::ReadParam<int>(m_parser_ptr, "iter_max");
     m_save_iter = io::ConfigIO::ReadParam<int>(m_parser_ptr, "iter_save");
+    m_need_l2_norm = io::ConfigIO::ReadParam<int>(m_parser_ptr, "need_l2_norm");
     log::info("Stop Flag <min>", m_iter_min, "<max>", m_iter_max, "Save Iter Num", m_save_iter);
 }
 
@@ -170,7 +172,7 @@ void KmeansCluster::PreEnv() {
 void KmeansCluster::LoadTrainSet() {
     auto dir = io::ConfigIO::ReadParam<string>(m_parser_ptr, "train_set_dir");
     log::info("Load Traning Data From", dir);
-    CHECK(io::Loader::LoadMatrixFromDir(dir, m_train_set));
+    CHECK(io::Loader::LoadMatrixFromDir(dir, m_train_set, m_need_l2_norm == 1));
     CHECK(m_train_set[0].size() == static_cast<size_t>(m_dimension));
     // set the train set num
     m_train_num = m_train_set.size();

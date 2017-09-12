@@ -26,6 +26,16 @@ bool Saver::SaveCodeBook(const cv::Mat& codebook, const char* path) {
     return true;
 }
 
+bool Saver::SaveProjectionIndexDist(const std::vector<std::pair<int, F> >& ma_index_dist,
+        const std::string& save_path) {
+    ofstream ofile(save_path, ios::out);
+    ofile << ma_index_dist.size() << '\n';
+    for(auto& p : ma_index_dist) {
+        ofile << p.first << ' ' << p.second << '\n';
+    }
+    ofile.close();
+}
+
 } //io
 
 } //insb

@@ -31,17 +31,17 @@ public:
     KdTree();
 
     // the interface to build KDTree
-    void Build(const cv::Mat& dataset, KnnType type);
+    void Build(const cv::Mat& dataset, KnnType type, int param = 4);
 
     // the release interface
     void Release();
 
     // the rebuild easy function
-    void ReBuild(const cv::Mat& dataset, KnnType type);
+    void ReBuild(const cv::Mat& dataset, KnnType type, int param = 4);
 
     // the search interaface
     std::pair<std::vector<int>, std::vector<F> > KnnSearch(const std::vector<F>& data,
-        int knn);
+        int knn, int param = 512);
 
 private:
     std::shared_ptr<KdTreeImple> m_kd_tree;
