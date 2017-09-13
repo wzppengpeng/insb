@@ -20,6 +20,7 @@ InsBagger is a c++11 framework based on opencv and wzp_cpp_lib(another project o
 
 ## How To Use
 Just see the shell script and ini config file in the script directory. Write config file and use command interface to start project.
+User also can use `key=value` to update the parameter in the config file.
 
 ## Support Task
 + kmeans_cluster
