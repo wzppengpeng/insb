@@ -15,8 +15,8 @@ InsBagger is a c++11 framework based on opencv and wzp_cpp_lib(another project o
 + linux or maxos
 
 ## Compile And Build
-. make sure your work diractory in the InsBagger(insb)
-. run the shell script `sh build.sh`
++ make sure your work diractory in the InsBagger(insb)
++ run the shell script `sh build.sh`
 
 ## How To Use
 Just see the shell script and ini config file in the script directory. Write config file and use command interface to start project.
