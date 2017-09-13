@@ -13,6 +13,7 @@ InsBagger is a c++11 framework based on opencv and wzp_cpp_lib(another project o
 + OpenCV Library
 + g++4.8 or later
 + linux or maxos
++ cmake tool
 
 ## Compile And Build
 + make sure your work diractory in the InsBagger(insb)
